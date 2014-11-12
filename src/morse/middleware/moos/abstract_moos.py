@@ -69,7 +69,7 @@ class AbstractMOOS(AbstractDatastream):
         if (mh, mp) in AbstractMOOS._moosapps:
             AbstractMOOS._moosapps[mh, mp].Close()
             AbstractMOOS._moosapps.pop((mh, mp))
-            AbstractMOOS.save_messages.pop((mh, mp))
+            AbstractMOOS._save_messages.pop((mh, mp))
             logger.info("MOOS datastream finalized: %s:%d"%(mh, mp))
 
 
