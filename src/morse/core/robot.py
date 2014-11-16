@@ -113,13 +113,13 @@ class Robot(morse.core.object.Object):
         """
         scene = blenderapi.scene()
 
+        name = "%s_position_box" %self.bge_object.name
         try:
-            box = scene.objects["position_box"]
+            box = scene.objects[name]
         except:
             box = None
 
         if box:
-            # Make the wheels orphans
             self.position_box = box
             self.position_box.removeParent()
             self.position_box.suspendDynamics()

@@ -235,15 +235,14 @@ class Robot(Component):
 
         position_box = None
         for child in self._bpy_object.children:
-            if child.name.lower() == "position_box":
+            if child.name.lower().startswith("position_box"):
                 position_box = child
 
         if position_box != None:
-            # Make a copy of the current transformation matrix
-            transformation = position_box.matrix_world.copy()
             position_box.parent = None
             position_box.game.physics_type = 'NO_COLLISION'
-            # position_box.matrix_world = transformation
+            # Give a unique name
+            position_box.name = "%s_position_box" %self.name
 
     def after_renaming(self):
         self.unparent_position_box()
