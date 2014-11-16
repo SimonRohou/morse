@@ -228,6 +228,25 @@ class Robot(Component):
         contr = obj.game.controllers[-1]
         contr.link(sensor = sens)
 
+    def unparent_position_box(self):
+        """ Make the position box orphans """
+        # Force Blender to update the transformation matrices of objects
+        bpymorse.get_context_scene().update()
+
+        position_box = None
+        for child in self._bpy_object.children:
+            if child.name.lower() == "position_box":
+                position_box = child
+
+        if position_box != None:
+            # Make a copy of the current transformation matrix
+            transformation = position_box.matrix_world.copy()
+            position_box.parent = None
+            position_box.game.physics_type = 'NO_COLLISION'
+            # position_box.matrix_world = transformation
+
+    def after_renaming(self):
+        self.unparent_position_box()
 
 class GroundRobot(Robot):
     def __init__(self, filename, name):
@@ -271,6 +290,7 @@ class WheeledRobot(GroundRobot):
             #bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 
     def after_renaming(self):
+        Robot.after_renaming(self)
         self.unparent_wheels()
         for obj in self.children:
             old = obj._bpy_object.rotation_euler
@@ -280,4 +300,3 @@ class WheeledRobot(GroundRobot):
             tmp_x = obj._bpy_object.location[0]
             obj._bpy_object.location[0] = -obj._bpy_object.location[1]
             obj._bpy_object.location[1] = tmp_x
-

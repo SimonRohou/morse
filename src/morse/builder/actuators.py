@@ -355,4 +355,10 @@ class KukaLWR(Armature):
         Armature.__init__(self, name, model_name = "kuka_lwr")
         self.create_ik_targets(["kuka_7"])
 
+class PositionBox(ActuatorCreator):
+    _classpath = "morse.actuators.position_box.PositionBox"
+
+    def __init__(self, name=None):
+        ActuatorCreator.__init__(self, name)
+
 # end morse.builder.actuators

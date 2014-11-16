@@ -33,8 +33,13 @@ class Robot(morse.core.object.Object):
 
         # shift against the simulator time (in ms)
         self.time_shift = 0.0
-
         self.is_dynamic = bool(self.bge_object.getPhysicsId())
+
+        # Configure a position box for the robot
+        # This box can be used to draw the estimated position of the
+        # robot, calculated by itself with interval analysis algorithms
+        self.position_box = None
+        self.get_position_box()
 
     def action(self):
         """ Call the regular action function of the component. """
@@ -98,3 +103,42 @@ class Robot(morse.core.object.Object):
 
         if self.is_dynamic:
             parent.restoreDynamics()
+
+    def get_position_box(self):
+        """
+        Configure a position box for the robot
+
+        This box can be used to draw the estimated position of the
+        robot, calculated by itself with interval analysis algorithms
+        """
+        scene = blenderapi.scene()
+
+        try:
+            box = scene.objects["position_box"]
+        except:
+            box = None
+
+        if box:
+            # Make the wheels orphans
+            self.position_box = box
+            self.position_box.removeParent()
+            self.position_box.suspendDynamics()
+            # The box will be visible only if the associated actuator is set
+            self.position_box.setVisible(False)
+
+    def update_position_box(self, pos, scale):
+        """
+        Update the position box of the robot
+
+        :param list pos: the list of new position to apply, for
+        each axis, in m.
+        :param list pos: the list of new scale to apply, for each axis.
+        """
+        if self.position_box != None:
+            self.position_box.setVisible(True)
+            self.position_box.position = pos
+            self.position_box.localScale = scale
+
+        else:
+            logger.warn("No 'position_box' object-child in the blender file")
+            logger.warn("\tSuch an object is requered with the PositionBox actuator")

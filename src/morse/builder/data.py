@@ -450,6 +450,13 @@ MORSE_DATASTREAM_DICT = {
             "yarp": INTERFACE_DEFAULT_IN,
             "yarp_json": INTERFACE_DEFAULT_IN,
             }
+        },
+    "morse.actuators.position_box.PositionBox": {
+        "default": {
+            "socket": INTERFACE_DEFAULT_IN,
+            "yarp": INTERFACE_DEFAULT_IN,
+            "moos" : 'morse.middleware.moos.position_box.PositionBoxReader'
+            }
         }
 }
 
