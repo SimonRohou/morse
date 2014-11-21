@@ -228,24 +228,35 @@ class Robot(Component):
         contr = obj.game.controllers[-1]
         contr.link(sensor = sens)
 
-    def unparent_position_box(self):
+    def create_position_box(self):
         """ Make the position box orphans """
         # Force Blender to update the transformation matrices of objects
         bpymorse.get_context_scene().update()
 
-        position_box = None
-        for child in self._bpy_object.children:
-            if child.name.lower().startswith("position_box"):
-                position_box = child
+        # creating the box
+        position_box = Cube("position_box") # this name will be replaced
+        position_box._bpy_object.name = "%s_position_box" %self.name
+        position_box._bpy_object.game.physics_type = 'NO_COLLISION'
 
-        if position_box != None:
-            position_box.parent = None
-            position_box.game.physics_type = 'NO_COLLISION'
-            # Give a unique name
-            position_box.name = "%s_position_box" %self.name
+        # defining material
+        mat = bpymorse.get_materials().new("white_wire")
+        mat.type = 'WIRE'
+        mat.diffuse_color = (1,1,1)
+        mat.diffuse_shader = 'LAMBERT' 
+        mat.diffuse_intensity = 0.8 
+        mat.specular_color = (1,1,1)
+        mat.specular_shader = 'COOKTORR'
+        mat.specular_intensity = 0.5
+        mat.specular_hardness = 50
+        mat.ambient = 1
+        mat.translucency = 0
+        mat.emit = 0
+
+        # adding material 'white_wire' to the box
+        position_box._bpy_object.data.materials.append(mat)
 
     def after_renaming(self):
-        self.unparent_position_box()
+        self.create_position_box()
 
 class GroundRobot(Robot):
     def __init__(self, filename, name):
