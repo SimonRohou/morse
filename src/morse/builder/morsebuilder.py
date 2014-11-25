@@ -250,7 +250,7 @@ class Robot(Component):
         mat.specular_hardness = 50
         mat.ambient = 1
         mat.translucency = 0
-        mat.emit = 0
+        mat.emit = 1.5
 
         # adding material 'white_wire' to the box
         position_box._bpy_object.data.materials.append(mat)
